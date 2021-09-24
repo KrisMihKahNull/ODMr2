@@ -30,7 +30,8 @@ Imports:
     shinyjs (>= 1.0),
     magrittr (>= 1.5),
     rlang (>= 0.4),
-    shinydashboard (>= 0.7)
+    shinydashboard (>= 0.7),
+    markdown (>= 1.0)
 RoxygenNote: 7.1.0
 Suggests: 
     knitr,
