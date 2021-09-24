@@ -3,7 +3,7 @@ A R package for working with an instance of the CUAHSI ODM running on MS-SQL. Wo
 
 ```R
 # install.packages("devtools")
-devtools::install_github("KrisMihKahNull/ODMr")
+devtools::install_github("KrisMihKahNull/ODMr.git")
 ```
 ### ODBC
 In order to talk to the database, you'll need to establish an ODBC connection to the ODM database on the machine that you're working on. To do this in Win7, go to Control Panel -> Administrative Tools, then choose "Data Sources (ODBC)". You'll want to add a "User DSN".
@@ -11,7 +11,7 @@ In order to talk to the database, you'll need to establish an ODBC connection to
 ### The Basics
 This will all be easier to use and understand if you have a fundamental understanding of the underlying data model. The model and the underlying motives for it's design can be found at http://www.cuahsi.org 
 
-Here is a quick example. You'll need the package RODBC in order to establish a connection using an ODBC connection. `DBI::dbConnect()` establishes a connection to the specified DSN and `ODMgetCatalog()` can be used to import the series catalog.
+Here is a quick example. You'll need the package odbc in order to establish a connection using an ODBC connection. `DBI::dbConnect()` establishes a connection to the specified DSN and `ODMgetCatalog()` can be used to import the series catalog.
 
 ```R
 library(ODMr)

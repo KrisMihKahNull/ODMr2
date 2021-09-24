@@ -13,7 +13,9 @@ console_ui <- function(id) {
     shiny::verbatimTextOutput(ns("output")),
     tabsetPanel(
       tabPanel("basics", shiny::helpText(shiny::includeMarkdown("examples/basics.md"))),
-      tabPanel("uploads", shiny::helpText(shiny::includeMarkdown("examples/upload.md")))
+      tabPanel("uploads", shiny::helpText(shiny::includeMarkdown("examples/upload.md"))),
+      tabPanel("stats", shiny::helpText(shiny::includeMarkdown("examples/statistics.md"))),
+      tabPanel("qualifiers", shiny::helpText(shiny::includeMarkdown("examples/qualifiers.md")))
     )
   )
 }

@@ -1,20 +1,20 @@
 ```
-#Access the full dataframe loaded into ODMtools
+#access the full dataframe loaded into ODMtools
 
 DataValues()
 
-#Retrieve values selected in the plot
+#retrieve values selected in the plot
 
 Selected()
 
-#Write any modifications back to the dataframe
+#write any modifications back to the dataframe
 
 Upsert()
 
-#Example
+#example
 
 Selected() %>%  
-  dplyr::mutate(DataValue = DataValue + 10,  
+  mutate(DataValue = DataValue + 10,  
     QualifierID = 106) %>%  
     Upsert()
 ```

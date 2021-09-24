@@ -18,8 +18,8 @@ Plot_server <- function(id, data) {
             y = ~DataValue,
             key = shiny::isolate(data$ODMdata$index),
             split = ~label,
-            type = "scatter",
-            mode = "line", 
+            type = "scattergl",
+            mode = "markers", 
             opacity = 0.8) %>%
           plotly::style(hoverinfo = 'none') %>%
           plotly::layout(legend = list(orientation = "h"))
