@@ -9,19 +9,31 @@ Plot_server <- function(id, data) {
   shiny::moduleServer(
     id,
     function(input, output, session) {
+      shiny::observe({shiny::req(data$ODMdata)
+        if(nrow(data$ODMdata) > 100000){
+          data$plotdata <- data$ODMdata %>% filter(DataValue != lag(DataValue)) %>%
+            group_by(lubridate::round_date(LocalDateTime, "30 minutes")) %>%
+            dplyr::filter(row_number() == 1) %>% ungroup()
+            }
+      })
+      
       output$plot <- plotly::renderPlotly({
         data$trigger
+        modes <- if(nrow(data$ODMdata) > 100000) {"lines"} else
+        {"markers"}
         shiny::isolate(shiny::req(data$ODMdata))
-        shiny::isolate(data$ODMdata) %>%
+        shiny::isolate(if(nrow(data$ODMdata) > 100000) {data$plotdata} else {
+          data$ODMdata
+        }
+                       ) %>%
           plotly::plot_ly(
             x = ~LocalDateTime,
             y = ~DataValue,
-            key = shiny::isolate(data$ODMdata$index),
+            key = ~index,
             split = ~label,
             type = "scattergl",
-            mode = "markers", 
+            mode = modes,
             opacity = 0.8) %>%
-          plotly::style(hoverinfo = 'none') %>%
           plotly::layout(legend = list(orientation = "h"))
       })
   
