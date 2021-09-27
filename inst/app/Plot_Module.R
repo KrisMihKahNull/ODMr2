@@ -12,7 +12,7 @@ Plot_server <- function(id, data) {
       shiny::observe({shiny::req(data$ODMdata)
         if(nrow(data$ODMdata) > 100000){
           data$plotdata <- data$ODMdata %>% filter(DataValue != lag(DataValue)) %>%
-            group_by(lubridate::round_date(LocalDateTime, "30 minutes")) %>%
+            group_by(lubridate::round_date(LocalDateTime, "hour")) %>%
             dplyr::filter(row_number() == 1) %>% ungroup()
             }
       })
