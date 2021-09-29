@@ -11,32 +11,46 @@ Plot_server <- function(id, data) {
     function(input, output, session) {
       shiny::observe({shiny::req(data$ODMdata)
         if(nrow(data$ODMdata) > 100000){
-          data$plotdata <- data$ODMdata %>% filter(DataValue != lag(DataValue)) %>%
-            group_by(lubridate::round_date(LocalDateTime, "hour")) %>%
-            dplyr::filter(row_number() == 1) %>% ungroup()
-            }
+          data$plotdata <- data$ODMdata %>% 
+            dplyr::group_by(LocalDateTime = lubridate::round_date(LocalDateTime, "day"),
+                            label) %>%
+            dplyr::summarise(Min = min(DataValue), Max = max(DataValue), Median = median(DataValue)) %>% 
+            dplyr::ungroup()
+        }
       })
       
       output$plot <- plotly::renderPlotly({
         data$trigger
-        modes <- if(nrow(data$ODMdata) > 100000) {"lines"} else
-        {"markers"}
         shiny::isolate(shiny::req(data$ODMdata))
-        shiny::isolate(if(nrow(data$ODMdata) > 100000) {data$plotdata} else {
-          data$ODMdata
-        }
-                       ) %>%
-          plotly::plot_ly(
-            x = ~LocalDateTime,
-            y = ~DataValue,
-            key = ~index,
-            split = ~label,
-            type = "scattergl",
-            mode = modes,
-            opacity = 0.8) %>%
-          plotly::layout(legend = list(orientation = "h"))
+        shiny::isolate(if(nrow(data$ODMdata) > 100000) {
+          data$plotdata %>%
+            plotly::plot_ly(
+              x = ~LocalDateTime,
+              y = ~Median,
+              split = ~label,
+              type = "scattergl",
+              mode = "lines",
+              opacity = 0.8) %>%
+            plotly::add_ribbons(name = "range",
+              ymin = ~Min, ymax = ~Max 
+            ) %>%
+            plotly::layout(
+              title = '> 100000 points, plotting daily median, min and max values',
+              legend = list(orientation = "h"))
+        } else {
+          data$ODMdata %>%
+            plotly::plot_ly(
+              x = ~LocalDateTime,
+              y = ~DataValue,
+              key = ~index,
+              split = ~label,
+              type = "scattergl",
+              mode = "markers",
+              opacity = 0.8) %>%
+            plotly::layout(legend = list(orientation = "h"))
+        })
       })
-  
+      
       
       plot_proxy <- plotly::plotlyProxy("plot", session)
       observe({
@@ -61,15 +75,15 @@ Plot_server <- function(id, data) {
                                   ))
         plotly::plotlyProxyInvoke(plot_proxy, "restyle", selectedpoints = NULL)
       })
-  
-  selected <- reactive({
-    key = plotly::event_data("plotly_selected")$key
-    if(length(key) < 1) {
-      key = 1:nrow(data$ODMdata)
-    }
-    key
-  })
-  
-  return(selected)
+      
+      selected <- reactive({
+        key = plotly::event_data("plotly_selected")$key
+        if(length(key) < 1) {
+          key = 1:nrow(data$ODMdata)
+        }
+        key
+      })
+      
+      return(selected)
     })
 }

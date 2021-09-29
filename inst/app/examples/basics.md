@@ -3,7 +3,7 @@
 
 DataValues()
 
-#retrieve values selected in the plot
+#retrieve values selected in the plot (only when plotting < 100,000 points)
 
 Selected()
 
